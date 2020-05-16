@@ -1,0 +1,44 @@
+<style>
+  #account-table {
+  	border-collapse: collapse;
+     width: 100%;
+  }
+  #account-table td,#account-table th {
+     border: 1px solid black;
+     font-size: 12px;
+     padding: 4px;
+  }
+  #account-table tr td {
+    page-break-inside: avoid;
+  }
+  #account-table th {
+  	font-weight: bold;
+  }
+</style>
+
+<table id="account-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Ration Number</th>
+      <th>Name</th>
+      <th>Dependent Name</th>
+      <th>Mother Name</th>
+      <th>Unit</th>
+      <th>Active Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for(var i=0; i < accData.length; i++) { %>
+     <tr>
+       <td><%= i %></td>
+       <td><%= accData[i].rationNumber %></td>
+       <td><%= accData[i].name %></td>
+       <td><%= accData[i].dependentName %></td>
+       <td><%= accData[i].motherName %></td>
+       <td><%= accData[i].unit %></td>
+       <td><%= accData[i].date %></td>
+     </tr>
+  <% } %>
+  </tbody>
+</table>

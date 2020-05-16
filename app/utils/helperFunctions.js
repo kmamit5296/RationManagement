@@ -1,0 +1,1 @@
+// Globlal helper functions
