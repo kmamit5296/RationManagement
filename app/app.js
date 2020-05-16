@@ -75,9 +75,12 @@ if (!window.Intl) {
   render(translationMessages);
 }
 
-// Install ServiceWorker and AppCache in the end since
-// it's not most important operation and if main code fails,
-// we do not want it installed
-if (process.env.NODE_ENV === 'production') {
-  require('offline-plugin/runtime').install(); // eslint-disable-line global-require
+// Remove or unregister service workers if exists on client machine
+if (process.env.NODE_ENV === 'production' && window.navigator && navigator.serviceWorker) {
+  navigator.serviceWorker.getRegistrations()
+  .then(registrations => {
+    registrations.forEach((registration) => {
+      registration.unregister();
+    });
+  });
 }
