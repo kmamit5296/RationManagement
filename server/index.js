@@ -65,7 +65,8 @@ app.get('/pdf', (req, res) => {
       return;
     }
     data = JSON.parse(data.toString());
-    const accData = data.accounts;
+    const monthData = data.monthlyData[req.query.month];
+    const accData = data.accounts.filter(acc => !monthData.includes(acc.rationNumber));
     const contents = fs.readFileSync('server/accounts.ejs', 'utf-8');
 
     let options = {

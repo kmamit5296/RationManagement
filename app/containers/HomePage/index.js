@@ -145,6 +145,7 @@ export default class HomePage extends React.Component {
   }
 
   render() {
+    const pdfLink = `/pdf?month=${this.state.year}-${this.state.month}`;
     return (
       <HomePageStyle fluid>
         <Form>
@@ -186,7 +187,7 @@ export default class HomePage extends React.Component {
                   variant="success"
                   size="sm"
                   target="_blank"
-                  href="/pdf"
+                  href={pdfLink}
                 >
                   Get PDF
                 </Button>
