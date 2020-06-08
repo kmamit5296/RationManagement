@@ -27,13 +27,26 @@ export default class HomePage extends React.Component {
     this.handleSaveData = this.handleSaveData.bind(this);
     this.handleFormSave = this.handleFormSave.bind(this);
     this.getTableHeaders = this.getTableHeaders.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
     request('/data')
       .then(result => {
         this.setState({ data: result });
       });
+  }
+
+  handleKeyDown(e) {
+    let accounts = this.state.data.accounts;
+    if (this.state.rationSearch) {
+      accounts = accounts.filter(acc => acc.rationNumber.toString().includes(this.state.rationSearch));
+    }
+    if (e.which === 75 && accounts.length > 0) {
+      const rationNumber = accounts[0].rationNumber;
+      this.handleCheckBoxChange(rationNumber);
+    }
   }
 
   handleSaveData() {
