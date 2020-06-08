@@ -19,7 +19,7 @@ const SearchElement = React.memo((props) => {
     <Form.Control
       id="ration-search"
       size="sm"
-      type="text"
+      type="number"
       placeholder="search"
       value={value}
       onChange={e => inputChange(e.target.value)}
