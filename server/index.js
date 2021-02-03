@@ -15,6 +15,7 @@ const ngrok =
     ? require('ngrok')
     : false;
 const { resolve } = require('path');
+const { includes } = require('lodash');
 const app = express();
 const bodyParser = require('body-parser');
 
@@ -44,6 +45,30 @@ app.get('/data', (req, res) => {
   });
 });
 
+app.delete('/data', (req, res) => {
+  console.time('deleting'); // eslint-disable-line
+  fs.readFile('server/data.json', (err, data) => {
+    if (err) {
+      console.error(err); // eslint-disable-line
+      res.status(500).json({ error: err });
+      console.timeEnd('deleting'); // eslint-disable-line
+      return;
+    }
+    const jsonData = JSON.parse(data.toString());
+    jsonData.accounts = jsonData.accounts.filter(accInfo => accInfo.rationNumber !== req.body.rationNumber);
+    fs.writeFile('server/data.json', JSON.stringify(jsonData), err => {
+      if (err) {
+        console.error(err); // eslint-disable-line
+        res.status(500).json({ error: err });
+        console.timeEnd('deleting'); // eslint-disable-line
+        return;
+      }
+      console.timeEnd('deleting'); // eslint-disable-line
+      res.json({});
+    });
+  });
+});
+
 app.post('/data', (req, res) => {
   console.time('saving'); // eslint-disable-line
   fs.writeFile('server/data.json', JSON.stringify(req.body), err => {
@@ -66,7 +91,7 @@ app.get('/pdf', (req, res) => {
     }
     data = JSON.parse(data.toString());
     const monthData = data.monthlyData[req.query.month];
-    const accData = data.accounts.filter(acc => !monthData.includes(acc.rationNumber));
+    const accData = data.accounts.filter(acc => !includes(monthData, acc.rationNumber));
     const contents = fs.readFileSync('server/accounts.ejs', 'utf-8');
 
     let options = {

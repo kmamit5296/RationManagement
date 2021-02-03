@@ -20,7 +20,8 @@ export default class HomePage extends React.Component {
         accounts: [],
         monthlyData: {}
       },
-      rationSearch: ''
+      rationSearch: '',
+      nameSearch: ''
     }
     this.getTableBody = this.getTableBody.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
@@ -28,6 +29,7 @@ export default class HomePage extends React.Component {
     this.handleFormSave = this.handleFormSave.bind(this);
     this.getTableHeaders = this.getTableHeaders.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentDidMount() {
@@ -70,6 +72,20 @@ export default class HomePage extends React.Component {
     this.setState({ data }, this.handleSaveData);
   }
 
+  handleDelete(rationNumber) {
+    request('/data', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ rationNumber })
+    })
+    .then(() => request('/data'))
+    .then(result => {
+      this.setState({ data: result });
+    });
+  }
+
   handleCheckBoxChange(rationNumber) {
     const { year, month, data } = this.state;
     const monthLabel = `${year}-${month}`;
@@ -97,14 +113,21 @@ export default class HomePage extends React.Component {
             Ration Number <br />
             <SearchElement
               valueChange={val => this.setState({ rationSearch: val })}
+              type="number"
             />
           </th>
-          <th>Name</th>
+          <th>
+            Name <br />
+            <SearchElement
+              valueChange={val => this.setState({ nameSearch: val })}
+            />
+          </th>
           <th>Dependent Name</th>
           <th>Mother Name</th>
           <th>Unit</th>
           <th>Active Date</th>
           <th>Ration Given</th>
+          <th></th>
           <th></th>
         </tr>
       </thead>
@@ -115,6 +138,9 @@ export default class HomePage extends React.Component {
     let accounts = this.state.data.accounts;
     if (this.state.rationSearch) {
       accounts = accounts.filter(acc => acc.rationNumber.toString().includes(this.state.rationSearch));
+    }
+    if (this.state.nameSearch) {
+      accounts = accounts.filter(acc => acc.name && acc.name.toString().includes(this.state.nameSearch));
     }
     return (
       <tbody>
@@ -147,6 +173,16 @@ export default class HomePage extends React.Component {
                     btnClass="edit-btn"
                     handleFormSave={this.handleFormSave}
                   />
+                </td>
+                <td>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => this.handleDelete(item.rationNumber)}
+                    className="edit-btn"
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             );

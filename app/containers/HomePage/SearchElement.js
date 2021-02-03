@@ -19,7 +19,7 @@ const SearchElement = React.memo((props) => {
     <Form.Control
       id="ration-search"
       size="sm"
-      type="number"
+      type={props.type}
       placeholder="search"
       value={value}
       onChange={e => inputChange(e.target.value)}
@@ -28,7 +28,12 @@ const SearchElement = React.memo((props) => {
 });
 
 SearchElement.propTypes = {
-  valueChange: PropTypes.func
+  valueChange: PropTypes.func,
+  type: PropTypes.string
 };
+
+SearchElement.defaultProps = {
+  type: 'text'
+}
 
 export default SearchElement;
