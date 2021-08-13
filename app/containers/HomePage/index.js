@@ -3,6 +3,7 @@ import { Form, Col, Table, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import moment from 'moment';
 import request from 'utils/request';
+import { cloneDeep, find, isEqual, trim } from 'lodash';
 
 import AddEditAccountModal from './AddAccountModal';
 import SearchElement from './SearchElement';
@@ -63,7 +64,7 @@ export default class HomePage extends React.Component {
 
   handleFormSave(formData, rationNumber) {
     const { data } = this.state;
-    const account = data.accounts.find(acc => acc.rationNumber === rationNumber);
+    const account = find(data.accounts, acc => isEqual(trim(acc.rationNumber), trim(rationNumber)));
     if (account) {
       Object.assign(account, formData);
     } else {
@@ -135,7 +136,7 @@ export default class HomePage extends React.Component {
   }
 
   getTableBody() {
-    let accounts = this.state.data.accounts;
+    let accounts = cloneDeep(this.state.data.accounts);
     if (this.state.rationSearch) {
       accounts = accounts.filter(acc => acc.rationNumber.toString().includes(this.state.rationSearch));
     }
